@@ -26,31 +26,30 @@ module.exports = class GrassEater extends LivingCreature{
     }
 
     eat() {
-		var grassCells = super.chooseCell(1);
-		var newCell = grassCells[Math.floor(Math.random() * grassCells.length)]
+        let found = this.chooseCell(1)
+        let exact = found[Math.floor(Math.random() * found.length)]
+        if (exact) {
+            this.energy += 5
+            let x = exact[0]
+            let y = exact[1]
+            for (let i = 0; i < grassArr.length; i++) {
+                if (grassArr[i].x == x && grassArr[i].y == y) {
+                    grassArr.splice(i, 1)
+                }
+            }
+            matrix[y][x] = 2
+            matrix[this.y][this.x] = 0
 
-		if (newCell) {
-
-			var newX = newCell[0];
-			var newY = newCell[1];
-
-			matrix[newY][newX] = matrix[this.y][this.x];
-			matrix[this.y][this.x] = 0;
-
-			this.x = newX;
-			this.y = newY;
-			this.energy+=2;
-
-			if (this.energy >= 40) {
-				console.log(this.energy);
-				this.mul();
-			}
-
-		}
-		else {
-			this.move();
-		}
-	}
+            this.x = x
+            this.y = y
+            if (this.energy >= 40) {
+                this.mul()
+            }
+        }
+        else {
+            this.move()
+        }
+    }
 
     move() {
 		var emptyCells = super.chooseCell(0);

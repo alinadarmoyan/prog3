@@ -6,8 +6,6 @@ function setup() {
     createCanvas(side * 50, side * 50)
 }
 
-
-
 function nkarel(matrix) {
     for (let y = 0; y < matrix.length; y++) {
         for (let x = 0; x < matrix[y].length; x++) {

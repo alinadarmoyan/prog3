@@ -25,32 +25,58 @@ module.exports = class Predator extends LivingCreature{
         return super.chooseCell(char)
     }
 
-    eat() {
-		var grassCells = super.chooseCell(2);
-		var newCell = grassCells[Math.floor(Math.random() * grassCells.length)]
+    // eat() {
+	// 	var grassCells = super.chooseCell(2);
+	// 	var newCell = grassCells[Math.floor(Math.random() * grassCells.length)]
 
-		if (newCell) {
+	// 	if (newCell) {
 
-			var newX = newCell[0];
-			var newY = newCell[1];
+	// 		var newX = newCell[0];
+	// 		var newY = newCell[1];
 
-			matrix[newY][newX] = matrix[this.y][this.x];
-			matrix[this.y][this.x] = 0;
+	// 		matrix[newY][newX] = matrix[this.y][this.x];
+	// 		matrix[this.y][this.x] = 0;
 
-			this.x = newX;
-			this.y = newY;
-			this.energy += 5;
+	// 		this.x = newX;
+	// 		this.y = newY;
+	// 		this.energy += 5;
 
-			if (this.energy >= 100) {
-				console.log(this.energy);
-				this.mul();
-			}
+	// 		if (this.energy >= 100) {
+	// 			console.log(this.energy);
+	// 			this.mul();
+	// 		}
 
-		}
-		else {
-			this.move();
-		}
-	}
+	// 	}
+	// 	else {
+	// 		this.move();
+	// 	}
+	// }
+
+	eat() {
+        let found = this.chooseCell(2)
+        let exact = found[Math.floor(Math.random() * found.length)]
+        if (exact) {
+            this.energy += 5
+            let x = exact[0]
+            let y = exact[1]
+            for (let i = 0; i < grassEaterArr.length; i++) {
+                if (grassEaterArr[i].x == x && grassEaterArr[i].y == y) {
+                    grassEaterArr.splice(i, 1)
+                }
+            }
+            matrix[y][x] = 3
+            matrix[this.y][this.x] = 0
+
+            this.x = x
+            this.y = y
+            if (this.energy >= 100) {
+                this.mul()
+            }
+        }
+        else {
+            this.move()
+        }
+    }
 
     move() {
 		var emptyCells = super.chooseCell(0);
