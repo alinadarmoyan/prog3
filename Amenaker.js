@@ -1,9 +1,9 @@
 LivingCreature = require('./LivingCreature');
 
-module.exports = class Predator extends LivingCreature{
+module.exports = class Amenaker extends LivingCreature{
     constructor(x, y) {
         super(x, y)
-        this.energy = 50
+        this.energy = 60
         
     }
 
@@ -28,21 +28,25 @@ module.exports = class Predator extends LivingCreature{
     mul() {
         let found = this.chooseCell(0)
         let exact = found[Math.floor(Math.random() * found.length)]
-        if (exact && this.energy >= 100) {
+        if (exact && this.energy >= 120) {
             let x = exact[0]
             let y = exact[1]
 
-            let eater = new Predator(x, y)
-            matrix[y][x] = 3
-            predatorArr.push(eater)
+            let eater = new Amenaker(x, y)
+            matrix[y][x] = 9
+            amenakerArr.push(eater)
 
-            this.energy = 50
+            this.energy = 60
         }
     }
 
 	eat() {
         let found = this.chooseCell(2)
         let exact = found[Math.floor(Math.random() * found.length)]
+        let found2 = this.chooseCell(3)
+        let exact2 = found2[Math.floor(Math.random() * found.length)]
+        let found1 = this.chooseCell(1)
+        let exact1 = found1[Math.floor(Math.random() * found.length)]
         if (exact) {
             this.energy += 5
             let x = exact[0]
@@ -52,12 +56,48 @@ module.exports = class Predator extends LivingCreature{
                     grassEaterArr.splice(i, 1)
                 }
             }
-            matrix[y][x] = 3
+            matrix[y][x] = 9
             matrix[this.y][this.x] = 0
 
             this.x = x
             this.y = y
-            if (this.energy >= 100) {
+            if (this.energy >= 120) {
+                this.mul()
+            }
+        }
+        else if (exact1) {
+            this.energy += 5
+            let x = exact1[0]
+            let y = exact1[1]
+            for (let i = 0; i < grassArr.length; i++) {
+                if (grassArr[i].x == x && grassArr[i].y == y) {
+                    grassArr.splice(i, 1)
+                }
+            }
+            matrix[y][x] = 9
+            matrix[this.y][this.x] = 0
+
+            this.x = x
+            this.y = y
+            if (this.energy >= 120) {
+                this.mul()
+            }
+        }
+        else if (exact2) {
+            this.energy += 5
+            let x = exact2[0]
+            let y = exact2[1]
+            for (let i = 0; i < predatorArr.length; i++) {
+                if (predatorArr[i].x == x && predatorArr[i].y == y) {
+                    predatorArr.splice(i, 1)
+                }
+            }
+            matrix[y][x] = 9
+            matrix[this.y][this.x] = 0
+
+            this.x = x
+            this.y = y
+            if (this.energy >= 120) {
                 this.mul()
             }
         }
@@ -91,9 +131,9 @@ module.exports = class Predator extends LivingCreature{
 
 
     die() {
-        for (let i = 0; i < predatorArr.length; i++) {
-            if (predatorArr[i].x == this.x && predatorArr[i].y == this.y) {
-                predatorArr.splice(i, 1)
+        for (let i = 0; i < amenakerArr.length; i++) {
+            if (amenakerArr[i].x == this.x && amenakerArr[i].y == this.y) {
+                amenakerArr.splice(i, 1)
             }
         }
         matrix[this.y][this.x] = 0

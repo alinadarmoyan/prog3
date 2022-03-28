@@ -70,7 +70,7 @@ module.exports = class Volcano extends LivingCreature{
         let found = this.chooseCell(0, 1, 2, 3, 8, 6)
         let emptyCells = this.chooseCell(0)
         let exact = found[Math.floor(Math.random() * emptyCells.length)]
-        if (exact && this.multiplay > 5) {
+        if (exact && this.multiplay > 6) {
             let x = exact[0]
             let y = exact[1]
             console.log(" ERRRRRRROROOOOORRRRR", matrix[y]);

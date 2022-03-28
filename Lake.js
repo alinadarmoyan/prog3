@@ -33,22 +33,10 @@
     }
 
     mul() {
-        // this.multiply++;
-        // if (this.multiply >= 3) {
-        //     let emptyCells = this.chooseCell(0)
-        //     let newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
-        //     if (this.multiply >= 5 && newCell) {
-        //         let x = newCell[0]
-        //         let y = newCell[1]
-        //         let lake = new Lake(x, y)
-        //         lakeArr.push(lake)
-        //         this.multiply = 0;
-        //     }
-        // }
         
         let found = this.chooseCell(0)
         let exact = found[Math.floor(Math.random() * found.length)]
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 5; i++) {
             if (exact && this.multiplay > 1) {
                 let x = exact[0]
                 let y = exact[1]

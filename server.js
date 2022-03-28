@@ -2,7 +2,8 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var fs = require("fs")
+var fs = require("fs");
+const Amenaker = require('./Amenaker');
 
 app.use(express.static("."));
 
@@ -19,7 +20,7 @@ function random(max) {
     return Math.random() * (max);
 }
 
-function generator(matrixSize, grassCount, grassEaterCount, predatorCount){
+function generator(matrixSize, grassCount, grassEaterCount, predatorCount, amenakerCount){
     for (let i = 0; i < matrixSize; i++) {
         matrix[i] = []
         for (let o = 0; o < matrixSize; o++) {
@@ -219,15 +220,6 @@ function generator(matrixSize, grassCount, grassEaterCount, predatorCount){
     matrix[44][47] = 5
     matrix[43][47] = 5
 
-    // for (let y = 0; y < matrixSize; y++) {
-    //     matrix[y] = [];
-    //     for (let x = 0; x < matrixSize; x++) {
-    //         if (matrix[y][x] != 5 && matrix[y][x] != 6 && matrix[y][x] != 7 && matrix[y][x] != 8) {
-    //             matrix[y][x] = Math.floor(random(0, 3))
-    //         }
-    //     }  
-    // }
-
     for (let i = 0; i < grassCount; i++) {
         let x = Math.floor(random(matrixSize))
         let y = Math.floor(random(matrixSize))
@@ -250,12 +242,18 @@ function generator(matrixSize, grassCount, grassEaterCount, predatorCount){
             matrix[y][x] = 3
         }
     }
+    for (let i = 0; i < predatorCount; i++) {
+        let x = Math.floor(random(matrixSize))
+        let y = Math.floor(random(matrixSize))
+        if (matrix[y][x] != 5 && matrix[y][x] != 6 && matrix[y][x] != 7 && matrix[y][x] != 8) {
+            matrix[y][x] = 9
+        }
+    }
 }
 
-generator(50, 20, 30, 50)
+generator(50, 20, 30, 50, 20)
 
 io.sockets.emit('send matrix', matrix)
-
 
 
 
@@ -264,12 +262,14 @@ grassEaterArr = []
 predatorArr = []
 lakeArr = []
 volcanoArr = []
+amenakerArr = []
 
 Grass = require("./Grass")
 GrassEater = require("./GrassEater")
 Predator = require("./Predator");
 Lake = require("./Lake");
 Volcano = require("./Volcano");
+amenaker = require("./Amenaker");
 
 function createObject() {
     for (var y = 0; y < matrix.length; y++) {
@@ -290,6 +290,9 @@ function createObject() {
             } else if (matrix[y][x] == 7) {
                 volcanoArr.push(new Volcano(x, y))
                 console.log(volcanoArr);
+            } else if (matrix[y][x] == 9) {
+                amenakerArr.push(new Amenaker(x, y))
+                console.log(amenakerArr);
             }
         }
     }
@@ -313,6 +316,9 @@ function game() {
     for (let i in volcanoArr) {
         volcanoArr[i].mul()
     }
+    for (let i in amenakerArr) {
+        amenakerArr[i].eat()
+    }
     io.sockets.emit('send matrix', matrix)
 }
 
@@ -323,8 +329,7 @@ function kill() {
     grassArr = []
     grassEaterArr = []
     predatorArr = []
-    // lakeArr = []
-    // volcanoArr = []
+    amenakerArr = []
     for (var y = 0; y < matrix.length; y++) {
         for (var x = 0; x < matrix[y].length; x++) {
             if (matrix[y][x] != 5 && matrix[y][x] != 6 && matrix[y][x] != 7 && matrix[y][x] != 8) {
@@ -337,9 +342,9 @@ function kill() {
 
 
 function addGrass() {
-    for (var i = 0; i < 7; i++) {
-    var x = Math.floor(Math.random() * matrix[0].length)
-    var y = Math.floor(Math.random() * matrix.length)
+    for (var i = 0; i < 10; i++) {
+        var x = Math.floor(Math.random() * matrix[0].length)
+        var y = Math.floor(Math.random() * matrix.length)
         if (matrix[y][x] == 0) {
             matrix[y][x] = 1
             var gr = new Grass(x, y, 1)
@@ -349,9 +354,9 @@ function addGrass() {
     io.sockets.emit("send matrix", matrix);
 }
 function addGrassEater() {
-    for (var i = 0; i < 7; i++) {   
-    var x = Math.floor(Math.random() * matrix[0].length)
-    var y = Math.floor(Math.random() * matrix.length)
+    for (var i = 0; i < 10; i++) {   
+        var x = Math.floor(Math.random() * matrix[0].length)
+        var y = Math.floor(Math.random() * matrix.length)
         if (matrix[y][x] == 0) {
             matrix[y][x] = 2
             grassEaterArr.push(new GrassEater(x, y, 2))
@@ -360,12 +365,23 @@ function addGrassEater() {
     io.sockets.emit("send matrix", matrix);
 }
 function addPredator() {
-    for (var i = 0; i < 7; i++) {   
-    var x = Math.floor(Math.random() * matrix[0].length)
-    var y = Math.floor(Math.random() * matrix.length)
+    for (var i = 0; i < 10; i++) {   
+        var x = Math.floor(Math.random() * matrix[0].length)
+        var y = Math.floor(Math.random() * matrix.length)
         if (matrix[y][x] == 0) {
             matrix[y][x] = 3
             predatorArr.push(new Predator(x, y, 3))
+        }
+    }
+    io.sockets.emit("send matrix", matrix);
+}
+function addAmenaker() {
+    for (var i = 0; i < 10; i++) {   
+        var x = Math.floor(Math.random() * matrix[0].length)
+        var y = Math.floor(Math.random() * matrix.length)
+        if (matrix[y][x] == 0) {
+            matrix[y][x] = 9
+            amenakerArr.push(new Amenaker(x, y, 9))
         }
     }
     io.sockets.emit("send matrix", matrix);
@@ -378,6 +394,7 @@ io.on('connection', function (socket) {
     socket.on("add grass", addGrass);
     socket.on("add grassEater", addGrassEater);
     socket.on("add predator", addPredator);
+    socket.on("add amenaker", addAmenaker);
 })
 
 var statistics = {};
@@ -386,7 +403,8 @@ setInterval(function() {
     statistics.grass = grassArr.length;
     statistics.grassEater = grassEaterArr.length;
     statistics.predator = predatorArr.length;
+    statistics.amenaker = amenakerArr.length;
     fs.writeFile("statistics.json", JSON.stringify(statistics), function(){
         console.log("send")
     })
-},1000)
+},100)

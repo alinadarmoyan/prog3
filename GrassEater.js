@@ -75,19 +75,39 @@ module.exports = class GrassEater extends LivingCreature{
 	}
 
     mul() {
-		var emptyCells = super.chooseCell(0);
-		var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+        let found = this.chooseCell(0)
+        let exact = found[Math.floor(Math.random() * found.length)]
+        if (exact && this.energy >= 40) {
+            let x = exact[0]
+            let y = exact[1]
 
-		if (newCell) {
-			var newX = newCell[0];
-			var newY = newCell[1];
-            var grEater = new GrassEater(newX, newY)
-            grassEaterArr.push(grEater)
-			this.energy = 20;
-		}
-	}
+            let eater = new GrassEater(x, y)
+            matrix[y][x] = 2
+            grassEaterArr.push(eater)
+
+            this.energy = 20
+        }
+    }
+
+    // mul() {
+	// 	var emptyCells = super.chooseCell(0);
+	// 	var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+
+	// 	if (newCell) {
+	// 		var newX = newCell[0];
+	// 		var newY = newCell[1];
+    //         var grEater = new GrassEater(newX, newY)
+    //         grassEaterArr.push(grEater)
+	// 		this.energy = 20;
+	// 	}
+	// }
 
     die() {
+        for (let i = 0; i < grassEaterArr.length; i++) {
+            if (grassEaterArr[i].x == this.x && grassEaterArr[i].y == this.y) {
+                grassEaterArr.splice(i, 1)
+            }
+        }
         matrix[this.y][this.x] = 0
     }
 }
