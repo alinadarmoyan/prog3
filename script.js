@@ -27,7 +27,7 @@ function nkarel(matrix) {
     for (let y = 0; y < matrix.length; y++) {
         for (let x = 0; x < matrix[y].length; x++) {
             if (matrix[y][x] == 0) {
-                fill("#DEDEDE")
+                fill("white")
             } else if (matrix[y][x] == 1) {
                 if (weath == "spring") {
                     fill("green")  
@@ -39,7 +39,7 @@ function nkarel(matrix) {
                     fill("#FF752B")
                 }
                 else if (weath == "winter") {
-                    fill("white")
+                    fill("#E0E4FF")
                 }
             } else if (matrix[y][x] == 2) {
                 fill("yellow")

@@ -12,13 +12,13 @@ module.exports = class Volcano extends LivingCreature{
     }
 
     
-    chooseCell(a, b, c, d, e, f) {
+    chooseCell(a, b, c, d, e, f, g) {
         let result = []
         for (let i = 0; i < this.directions.length; i++) {
             let x = this.directions[i][0]
             let y = this.directions[i][1]
             if (y < matrix.length && y >= 0 && x < matrix[0].length && x >= 0) {
-                if (matrix[y][x] == a || matrix[y][x] == b || matrix[y][x] == c || matrix[y][x] == d || matrix[y][x] == e || matrix[y][x] == f ) {
+                if (matrix[y][x] == a || matrix[y][x] == b || matrix[y][x] == c || matrix[y][x] == d || matrix[y][x] == e || matrix[y][x] == f || matrix[y][x] == g ) {
                     result.push(this.directions[i])
                 }
             }
@@ -64,10 +64,17 @@ module.exports = class Volcano extends LivingCreature{
         else if(character == 8){
             return
         }
+        else if (character == 9){
+            for (let i = 0; i < amenakerArr.length; i++) {
+                if (amenakerArr[i].x == x && amenakerArr[i].y == y) {
+                    amenakerArr.splice(i, 1)
+                }
+            }
+        }
     }
 
     mul() {
-        let found = this.chooseCell(0, 1, 2, 3, 8, 6)
+        let found = this.chooseCell(0, 1, 2, 3, 8, 6, 9)
         let emptyCells = this.chooseCell(0)
         let exact = found[Math.floor(Math.random() * emptyCells.length)]
         if (exact && this.multiplay > 6) {
